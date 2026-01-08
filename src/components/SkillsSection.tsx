@@ -163,7 +163,7 @@ const certifications = [
     description: 'Completed a comprehensive Android Developer Nanodegree program covering mobile app development fundamentals, UI/UX design, Kotlin programming, and Google Play Store deployment.',
   },
   {
-    name: 'Certificate of Appreciation for AI Roadmap Contribution',
+    name: 'Certificate of Appreciation',
     issuer: 'Bahir Dar Institute of Technology (BiT)',
     year: '2024',
     image: '/Instructor at BiT Codesphere.jpg',
