@@ -1,6 +1,6 @@
-import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
-import { Award } from 'lucide-react';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { useRef, useState, useEffect } from 'react';
+import { Award, X, Download, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const skillCategories = [
   {
@@ -107,15 +107,79 @@ const skillCategories = [
 
 
 const certifications = [
-  { name: 'Deep Learning Specialization', issuer: 'DeepLearning.AI', year: '2023' },
-  { name: 'Machine Learning Specialization', issuer: 'DeepLearning.AI', year: '2023' },
-  { name: 'CCNA Introduction to Networks', issuer: 'Cisco', year: '2022' },
-  { name: 'Delf B2', issuer: 'Institut français', year: '2021' },
+  {
+    name: 'Deep Learning Specialization',
+    issuer: 'DeepLearning.AI',
+    year: '2023',
+    image: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=1000&auto=format&fit=crop',
+    link: '#',
+    description: 'Mastered the foundations of Deep Learning, understanding how to build neural networks, and how to lead successful machine learning projects. Learned about Convolutional networks, RNNs, LSTM, Adam, Dropout, BatchNorm, Xavier/He initialization, and more.',
+  },
+  {
+    name: 'Machine Learning Specialization',
+    issuer: 'DeepLearning.AI',
+    year: '2023',
+    image: 'https://images.unsplash.com/photo-1527474305487-b87b222841cc?q=80&w=1000&auto=format&fit=crop',
+    link: '#',
+    description: 'Gained a broad introduction to machine learning, datamining, and statistical pattern recognition. Topics included: Supervised learning (parametric/non-parametric algorithms, support vector machines, kernels, neural networks).',
+  },
+  {
+    name: 'CCNA Introduction to Networks',
+    issuer: 'Cisco',
+    year: '2022',
+    image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=1000&auto=format&fit=crop',
+    link: '#',
+    description: 'Covered the architecture, structure, functions, components, and models of the Internet and other computer networks. The principles and structure of IP addressing and the fundamentals of Ethernet concepts, media, and operations were introduced.',
+  },
+  {
+    name: 'Delf B2',
+    issuer: 'Institut français',
+    year: '2021',
+    image: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80&w=1000&auto=format&fit=crop',
+    link: '#',
+    description: 'Official diploma awarded by the French Ministry of Education to certify the competency of candidates from outside France in the French language. B2 indicates an upper intermediate level of user.',
+  },
 ];
 
 const SkillsSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const [selectedCert, setSelectedCert] = useState<typeof certifications[0] | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    const scrollContainer = scrollRef.current;
+    if (!scrollContainer) return;
+
+    let animationFrameId: number;
+
+    const scroll = () => {
+      if (!isPaused) {
+        if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth / 2) {
+          scrollContainer.scrollLeft = 0;
+        } else {
+          scrollContainer.scrollLeft += 1;
+        }
+      }
+      animationFrameId = requestAnimationFrame(scroll);
+    };
+
+    animationFrameId = requestAnimationFrame(scroll);
+
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [isPaused]);
+
+  const handleScroll = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const scrollAmount = 300;
+      const targetScroll = scrollRef.current.scrollLeft + (direction === 'left' ? -scrollAmount : scrollAmount);
+      scrollRef.current.scrollTo({
+        left: targetScroll,
+        behavior: 'smooth',
+      });
+    }
+  };
 
   return (
     <section id="skills" className="py-24 relative bg-muted/30">
@@ -178,25 +242,124 @@ const SkillsSection = () => {
             <Award className="w-6 h-6 inline-block mr-2 text-primary" />
             Certifications
           </h3>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {certifications.map((cert, index) => (
-              <motion.div
-                key={cert.name}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
-                className="glass-card p-4 text-center hover-lift group"
-              >
-                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                  <Award className="w-6 h-6 text-primary" />
+          
+          <div
+            className="relative group"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+          >
+            <button
+              onClick={() => handleScroll('left')}
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-2 bg-background/50 backdrop-blur-md border border-white/10 rounded-full shadow-lg hover:bg-primary hover:text-white transition-all opacity-0 group-hover:opacity-100 translate-x-[-20px] group-hover:translate-x-0"
+              aria-label="Scroll left"
+            >
+              <ChevronLeft size={24} />
+            </button>
+
+            <button
+              onClick={() => handleScroll('right')}
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-2 bg-background/50 backdrop-blur-md border border-white/10 rounded-full shadow-lg hover:bg-primary hover:text-white transition-all opacity-0 group-hover:opacity-100 translate-x-[20px] group-hover:translate-x-0"
+              aria-label="Scroll right"
+            >
+              <ChevronRight size={24} />
+            </button>
+
+            <div 
+              className="w-full overflow-hidden py-4"
+              style={{ maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)', WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)' }}
+            >
+              <div ref={scrollRef} className="flex gap-6 overflow-x-hidden w-full no-scrollbar">
+              {/* Tripling the list ensures smooth infinite scrolling on wider screens */}
+              {[...certifications, ...certifications, ...certifications].map((cert, index) => (
+                <div
+                  key={`${cert.name}-${index}`}
+                  className="w-[280px] flex-shrink-0 cursor-pointer group"
+                  onClick={() => setSelectedCert(cert)}
+                >
+                  <div className="glass-card p-4 h-full hover-lift transition-all duration-300 border border-white/10 hover:border-primary/30">
+                    <div className="aspect-video rounded-lg overflow-hidden mb-4 bg-muted relative">
+                      <img
+                        src={cert.image}
+                        alt={cert.name}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <span className="text-white text-xs font-medium px-3 py-1 rounded-full bg-primary/80 backdrop-blur-sm">
+                          View Details
+                        </span>
+                      </div>
+                    </div>
+                    <h4 className="font-medium text-sm mb-1 line-clamp-1 group-hover:text-primary transition-colors">
+                      {cert.name}
+                    </h4>
+                    <div className="flex justify-between items-center mt-2">
+                      <p className="text-muted-foreground text-xs">{cert.issuer}</p>
+                      <p className="text-primary text-xs font-mono bg-primary/10 px-2 py-0.5 rounded">{cert.year}</p>
+                    </div>
+                  </div>
                 </div>
-                <h4 className="font-medium text-sm mb-1 line-clamp-2">{cert.name}</h4>
-                <p className="text-muted-foreground text-xs">{cert.issuer}</p>
-                <p className="text-primary text-xs mt-1">{cert.year}</p>
-              </motion.div>
-            ))}
+              ))}
+              </div>
+            </div>
           </div>
         </motion.div>
+
+        {/* Certification Modal */}
+        <AnimatePresence>
+          {selectedCert && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+              onClick={() => setSelectedCert(null)}
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+                className="glass-card max-w-7xl w-full overflow-hidden relative shadow-2xl flex flex-col md:flex-row bg-background/95"
+              >
+                <button
+                  onClick={() => setSelectedCert(null)}
+                  className="absolute top-4 right-4 p-2 rounded-full bg-black/20 hover:bg-black/40 text-white transition-colors z-10"
+                >
+                  <X size={20} />
+                </button>
+
+                <div className="w-full md:w-2/3 h-80 md:min-h-[600px] relative bg-muted">
+                  <img
+                    src={selectedCert.image}
+                    alt={selectedCert.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+
+                <div className="w-full md:w-1/3 p-6 md:p-8 flex flex-col justify-center">
+                  <div className="mb-6">
+                    <h3 className="text-2xl font-bold mb-2 font-display">{selectedCert.name}</h3>
+                    <p className="text-muted-foreground mb-1">
+                      Issued by <span className="text-foreground font-medium">{selectedCert.issuer}</span>
+                    </p>
+                    <p className="text-sm text-primary font-medium">{selectedCert.year}</p>
+                    <p className="text-muted-foreground mt-4 text-sm leading-relaxed">{selectedCert.description}</p>
+                  </div>
+
+                  <div className="flex gap-3 mt-auto">
+                    <a
+                      href={selectedCert.link}
+                      className="flex-1 flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 px-4 rounded-lg hover:bg-primary/90 transition-colors font-medium text-sm"
+                    >
+                      <Download size={16} />
+                      Download
+                    </a>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );
