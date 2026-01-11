@@ -380,6 +380,7 @@ const SkillsSection = () => {
                   <div className="flex gap-3 mt-auto">
                     <a
                       href={selectedCert.link}
+                      download
                       className="flex-1 flex items-center justify-center gap-2 bg-primary text-primary-foreground py-2.5 px-4 rounded-lg hover:bg-primary/90 transition-colors font-medium text-sm"
                     >
                       <Download size={16} />
