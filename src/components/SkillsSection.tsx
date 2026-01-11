@@ -363,7 +363,7 @@ const SkillsSection = () => {
                   <img
                     src={selectedCert.image}
                     alt={selectedCert.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                   />
                 </div>
 
