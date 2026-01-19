@@ -31,7 +31,7 @@ const experiences = [
   {
     title: 'Software Engineer',
     company: 'Intrepid Prime AI',
-    location: 'USA — Remote',
+    location: 'Washington DC, USA — Remote',
     period: 'Feb 2025 – Jun 2025',
     description:
       'Worked on AI-driven financial analytics platform, building sentiment analysis and scalable cloud data systems for market intelligence workflows.',
