@@ -29,7 +29,7 @@ const experiences = [
     ],
   },
   {
-    title: 'Software Engineer',
+    title: 'AI and Machine Learning Engineer',
     company: 'Intrepid Prime AI',
     location: 'Washington DC, USA — Remote',
     period: 'Feb 2025 – Jun 2025',
